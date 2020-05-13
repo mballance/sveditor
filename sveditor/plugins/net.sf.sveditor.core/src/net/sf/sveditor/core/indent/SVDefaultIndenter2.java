@@ -288,16 +288,11 @@ public class SVDefaultIndenter2 implements ISVIndenter {
 	 */
 	private SVIndentToken indent_if(boolean is_else_if,
 			boolean dont_indent_first) {
-		boolean is_expect = false;		// An expect statement might not have a statement after the if, just jump straight to the else clause
 		SVIndentToken tok = current();
-		if (tok.isId("expect"))  {
-			is_expect = true;
-		}
-
 		if (fDebugEn) {
 			debug("--> indent_if() tok=" + tok.getImage());
 		}
-
+		
 		if (!dont_indent_first)
 			start_of_scope(tok);
 
@@ -315,7 +310,7 @@ public class SVDefaultIndenter2 implements ISVIndenter {
 		// An expect statement could have form:
 		//   expect (property) else pass_case();
 		// which would not have expect if statements 
-		if (is_expect && tok.isId("else"))  {
+		if (tok.isId("else"))  {
 			// Need to un-indent on the else
 			leave_scope(tok);
 		}

@@ -1753,7 +1753,62 @@ public class IndentTests extends SVCoreTestCaseBase {
 		LogFactory.removeLogHandle(log);
 	}
 
-	public void testForkJoin() {
+	public void testIfEmpty() {
+		String testname = "testIfEmpty";
+		String ref =
+				"module foo ();\n" +
+				"	initial begin\n" +
+				"		// comment1\n" +
+				"		if (1) else begin a = b; end\n" +
+				"		// comment2\n" +
+				"		if (1) else\n" +
+				"		begin\n" +
+				"			// comment3\n" +
+				"			a=b;\n" +
+				"		end\n" +
+				"		// comment4\n" +
+				"		if (1)\n" +
+				"			// comment5\n" +
+				"		else\n" +
+				"		begin\n" +
+				"			// comment6\n" +
+				"			a=b;\n" +
+				"		end\n" +
+				"		// comment7\n" +
+				"		if (1) else a = b; \n" +
+				"		// comment8\n" +
+				"		if (1) else\n" +
+				"			// comment9\n" +
+				"			a=b;\n" +
+				"		// comment10\n" +
+				"		if (1)\n" +
+				"			// comment11\n" +
+				"		else\n" +
+				"			// comment12\n" +
+				"			a=b;\n" +
+				"		// comment13\n" +
+				"		b=c;\n" +
+				"	end\n"  +
+				"endmodule\n" 
+				;
+		
+		LogHandle log = LogFactory.getLogHandle(testname);
+		SVCorePlugin.getDefault().enableDebug(true);
+		
+		// Run the indenter over the reference source
+		SVIndentScanner scanner = new SVIndentScanner(new StringTextScanner(ref));
+		ISVIndenter indenter = SVCorePlugin.getDefault().createIndenter();
+		indenter.init(scanner);
+		indenter.setTestMode(true);
+		
+		String result = indenter.indent(-1, -1);
+		
+		IndentComparator.compare(log, testname, ref, result);
+		SVCorePlugin.getDefault().enableDebug(false);
+		LogFactory.removeLogHandle(log);
+	}
+	
+		public void testForkJoin() {
 		String testname = "testForkJoin";
 		String ref =
 		"class foo;\n" +
